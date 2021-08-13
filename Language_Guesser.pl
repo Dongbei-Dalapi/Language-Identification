@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use lib '/Users/chingfen/Perl_files';
+use lib '/Users/chingfen/Perl_files/Language-Identification';
 use Profile;
 use Math::Round;
 use Text::Trim qw(trim);
@@ -32,7 +32,7 @@ sub guess {
 
    for my $profile (@profiles) {
       $profile->countNGramsRanks($profile->{_text}, 1, 5);
-      my $d = distance($target_profile, $profile);
+      my $d = $target_profile->distance($profile);
       if ($d < $minimal_distance || $minimal_distance < 0) {
          $guess_language = $profile->getName();
          $minimal_distance = $d;

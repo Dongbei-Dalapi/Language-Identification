@@ -4,6 +4,7 @@ use strict;
 use warnings;
 require Text::Ngrams;
 
+
 sub new {
    my $class = shift;
    my $self = {
@@ -25,12 +26,15 @@ sub countNGramsRanks {
         my %target_ngrams = $ng->get_ngrams( n => $_, normalize => 1 );
         @ngramFreqs{keys %target_ngrams} = values %target_ngrams;
     } 
+    delete $ngramFreqs{' '};
+
     
     my %ngramRanks;
     my $current_size = 0;
 
-    for my $gram (sort { $ngramFreqs{$a} <=> $ngramFreqs{$b} } keys %ngramFreqs) {
+    for my $gram (sort { $ngramFreqs{$b} <=> $ngramFreqs{$a} } keys %ngramFreqs) {
         $current_size = $current_size + 1;
+        print $gram, "\n";
         $ngramRanks{$gram} = $current_size;
         last if($current_size >= 300);
     }
@@ -48,6 +52,22 @@ sub getNgramRanks {
 sub getName {
     my( $self ) = @_;
     return $self->{_name};
+}
+
+
+sub distance {
+    my ( $self, $other ) = @_;
+    my $d = 0;
+    my %ranksA = %{$self->getNgramRanks()};
+    my %ranksB = %{$other->getNgramRanks()};
+    for (keys %ranksA){
+        if (exists $ranksB{$_}) {
+           $d = $d + abs($ranksA{$_} - $ranksB{$_});
+        }else{
+           $d = $d + abs($ranksA{$_} - 300);
+        }
+    }
+    return $d
 }
 
 1;

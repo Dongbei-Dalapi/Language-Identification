@@ -1,0 +1,4 @@
+# cpanfile
+requires Text::Ngrams;
+requires Text::Trim qw(trim);
+requires Math::Round;
